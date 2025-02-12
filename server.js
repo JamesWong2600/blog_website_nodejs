@@ -22,6 +22,10 @@ fs.readFile('discord_token.txt', 'utf8', (err, data) => {
   token = data;
 });
 
+const client = redis.createClient({
+  url: 'redis://localhost:6379'  // default Redis url
+});
+
 db.serialize(() => {
   // Users table
   db.run(`CREATE TABLE IF NOT EXISTS users (
@@ -150,18 +154,26 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    if (username === 'admin' && password === 'admin') {
-      res.render('main.njk',{text: 'welcome to the dashboard'});
-    }
-    else{
+  const username = req.body.username;
+  const password = req.body.password;
+  console.log(username+" "+password);
+  db.all("SELECT * FROM users where username = '"+username+"' and password = '"+password+"'", (err, rows) => {
+    console.log(rows);
+    if (rows.length === 0) {
+      console.log(err);
       res.render('main.njk',{text: 'invalid username or password'});
+    } else {
+      db.all("SELECT id, username, blog_title, blog_content FROM blog", (err, rows) => {
+        if (rows.length === 0) {
+          console.error(err.message);
+          res.status(500).send('Error retrieving data from database');
+        } else {
+          const text = "discord chat record";
+          res.render('blog.njk', {posts: rows});
+        }
+      });
     }
-  } catch (error) {
-      console.error('Login error:', error);
-      res.redirect('/login?error=server');
-  }
+  });
 });
 
 
