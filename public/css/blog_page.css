@@ -1,0 +1,371 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+
+.email-container {
+    width: 1500px;
+    margin: 40px auto;
+    padding: 0 20px;
+    position: absolute; 
+    left:10%;
+    top: 2%;
+}
+
+.email-header {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.blog-poster-container {
+    width: 70%;
+    margin: 40px auto;
+    padding: 0 20px;
+    position: absolute; 
+    left: 15%;
+    top: 500%;
+}
+
+.blog-poster {
+    background: linear-gradient(135deg, #2c3e50, #3cdb34);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.email-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.email-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 1500px;
+}
+
+/* Compose Email Section */
+.compose-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 800px;
+}
+
+.compose-section h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.submit-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #2980b9;
+}
+
+/* Email List Section */
+.email-list {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 500px;
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    top: 80%;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.email-list h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.email-item {
+    padding: 20px;
+    border-bottom: 2px solid #e1e8ed;
+    transition: background-color 0.3s ease;
+}
+
+.email-item:last-child {
+    border-bottom: none;
+}
+
+.email-item:hover {
+    background-color: #f8f9fa;
+}
+
+.email-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.email-subject {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.email-preview {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Custom Scrollbar */
+.email-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.email-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.email-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.email-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .email-content {
+        grid-template-columns: 1fr;
+    }
+}
+.email-actions {
+display: flex;
+justify-content: flex-end;
+margin-top: 10px;
+}
+
+.delete-btn {
+background-color: #e74c3c;
+color: white;
+border: none;
+padding: 8px 16px;
+border-radius: 6px;
+cursor: pointer;
+font-size: 14px;
+transition: background-color 0.3s ease;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.delete-btn:hover {
+background-color: #c0392b;
+}
+
+.delete-btn i {
+font-size: 14px;
+}
+
+/* Modify email-item to accommodate delete button */
+.email-item {
+padding: 20px;
+border-bottom: 2px solid #e1e8ed;
+transition: background-color 0.3s ease;
+}
+
+.email-item:hover {
+background-color: #f8f9fa;
+}
+
+
+#gg {
+    background-image: url("../static/img/index_background.png");  /* Updated path */
+    background-size: cover;  /* Changed from fixed size to cover */
+    background-position: center;  /* Added for better positioning */
+    background-repeat: no-repeat;
+    min-height: 200vh;  /* Changed from height: 100% to min-height: 100vh */
+    width: 100%;  /* Added to ensure full width */
+    position: absolute;  /* Changed from absolute to fixed */
+    top: 0;
+    left: 0;
+    z-index: -2;  /* Added to ensure background stays behind content */
+    animation: fadeIn 4s;
+    }
+
+.content {
+    padding-top: 60px; /* Add padding to avoid content being hidden behind the navbar */
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.error {
+    font-size: 20px;
+    color: red; 
+}
+
+.table-container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Header Styles */
+thead {
+    background-color: #333;
+    color: white;
+}
+
+th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-bottom: 2px solid #444;
+}
+
+/* Body Styles */
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Row Hover Effect */
+tbody tr:hover {
+    background-color: #f5f5f5;
+    transition: background-color 0.3s ease;
+}
+
+/* Zebra Striping */
+tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* Column Widths */
+.col-sender {
+    width: 20%;
+}
+
+.col-email {
+    width: 40%;
+}
+
+.col-time {
+    width: 40%;
+}

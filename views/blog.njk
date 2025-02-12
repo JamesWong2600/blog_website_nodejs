@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Email</title>
+     <link rel="stylesheet" href="/css/blog_page.css">
+</head>
+
+<script>
+    const textarea = document.getElementById('content');
+    
+    textarea.addEventListener('input', function() {
+        // Reset height to auto to get correct scrollHeight
+        this.style.height = 'auto';
+        // Set new height based on content
+        const newHeight = Math.min(this.scrollHeight, 150); // Max height of 150px
+        this.style.height = newHeight + 'px';
+    });
+    
+    // Optional: Focus textarea when clicking anywhere in compose area
+    document.querySelector('.compose-area').addEventListener('click', function(e) {
+        if (e.target === this) {
+            textarea.focus();
+        }
+    });
+    </script>
+
+<body>
+     <div id="gg"></div>
+     <div class="email-container">
+        <div class="email-header">
+            <h1><i class="fas fa-envelope"></i>post list</h1>
+        </div>
+    <div class="email-list">
+        <h2><i class="fas fa-inbox"></i>Post list</h2>
+        {% for post in posts %}
+        <div class="email-item">
+            <div class="email-meta">
+                <span><i class="fas fa-user"></i>sender: {{ post.username }}</span>
+                <span><i class="far fa-clock"></i>title: {{ post.blog_title }}</span>
+            </div>
+            <div class="email-subject">content: {{ post.blog_content }}</div>
+        </div>
+        {% endfor %}
+    </div>
+       
+
+       <div class="blog-poster-container">
+            <div class="blog-poster">
+            <a href="/blogging"><h1><i class="fas fa-envelope"></i>post list</h1></a>
+            </div>
+      </div>
+
+
+        
+
+
+
+
+</body>
+</html>
