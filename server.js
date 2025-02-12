@@ -6,12 +6,20 @@ import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import { Client, GatewayIntentBits } from 'discord.js';
 import nunjucks from 'nunjucks';
+import fs from 'fs'; 
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 const db = new sqlite3.Database('./user_data.db');
 const app = express();
 const port = 3000;
-const token = 'MTMzODM2MzY2MDYzNjI1ODMxNA.GGbk7T.5R8FeruZV23iObS-j5XQD8vcfagUkRfkteMCcw'; 
+
+fs.readFile('discord_token.txt', 'utf8', (err, data) => {
+  if (err) {
+      console.error('Error reading file:', err);
+      return;
+  }
+  const token = data;
+});
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
