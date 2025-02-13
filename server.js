@@ -22,8 +22,14 @@ fs.readFile('discord_token.txt', 'utf8', (err, data) => {
   token = data;
 });
 
-const client = redis.createClient({
+const redis_client = redis.createClient({
   url: 'redis://localhost:6379'  // default Redis url
+});
+
+
+
+redis_client.on('connect', () => {
+  console.log('Connected to Redis');
 });
 
 db.serialize(() => {
@@ -58,9 +64,6 @@ db.serialize(() => {
   });
 });
 
-function insertUser(username, email, password) {
-
-}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -119,8 +122,11 @@ app.post('/post_blog', async (req, res) => {
               console.error(err.message);
               res.status(500).send('Error retrieving data from database');
             } else {
-              const text = "discord chat record";
-              res.render('blog.njk', {posts: rows});
+              const ip = req.ip;
+              getRedisData(ip).then(name => {
+                console.log("name: "+name);
+                res.render('blog.njk', {posts: rows, welcome: "welcome "+name});
+              });
             }
           });
         }
@@ -137,15 +143,24 @@ app.post('/register', async (req, res) => {
       "INSERT INTO users (username, email, password) VALUES ('" + username + "', '" + email + "', '" + password + "')", (err, rows) => {
         if (err) {
           console.error(err.message);
-          res.render('main.njk',{text: 'the username or might me used'});
+          res.render('register.njk',{errorMessage: 'the username or email might me used'});
         } else {
           db.all("SELECT id, username, blog_title, blog_content FROM blog", (err, rows) => {
             if (err) {
               console.error(err.message);
               res.status(500).send('Error retrieving data from database');
             } else {
-              const text = "discord chat record";
-              res.render('blog.njk', {posts: rows});
+              try {
+                redis_client.connect();
+                const ip = req.ip; // If you're using Express
+                redis_client.set(ip, username);
+                redis_client.quit();
+                res.render('blog.njk', {posts: rows, welcome: "welcome "+ username})
+              } catch (err) {
+                console.error('Error inserting data into Redis', err);
+                res.status(500).send('Error inserting data into Redis');
+              }
+;
             }
           });
         }
@@ -161,15 +176,18 @@ app.post('/login', async (req, res) => {
     console.log(rows);
     if (rows.length === 0) {
       console.log(err);
-      res.render('main.njk',{text: 'invalid username or password'});
+      res.render('login.njk',{errorMessage: 'invalid username or password'});
     } else {
       db.all("SELECT id, username, blog_title, blog_content FROM blog", (err, rows) => {
         if (rows.length === 0) {
           console.error(err.message);
           res.status(500).send('Error retrieving data from database');
         } else {
-          const text = "discord chat record";
-          res.render('blog.njk', {posts: rows});
+          redis_client.connect();
+          const ip = req.ip;
+          redis_client.set(ip, username);
+          redis_client.quit();
+          res.render('blog.njk', {posts: rows, welcome: "welcome "+ username})
         }
       });
     }
@@ -180,3 +198,16 @@ app.post('/login', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+
+async function getRedisData(ip) {
+  try {
+      await redis_client.connect();
+      const value = await redis_client.get(ip);
+      console.log("redis data: "+value);
+      await redis_client.quit();
+      return value;
+  } catch (error) {
+      console.error('Error getting data:', error);
+      return null;
+}
+}

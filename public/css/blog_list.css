@@ -1,0 +1,161 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+
+.blog-container {
+    width: 1500px;
+    margin: 40px auto;
+    padding: 0 20px;
+    position: absolute; 
+    left:10%;
+    top: 2%;
+}
+
+.blog-header {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.blog-poster-container {
+    width: 70%;
+    margin: 40px auto;
+    padding: 0 20px;
+    position: absolute; 
+    left: 15%;
+    top: 500%;
+}
+
+.blog-poster {
+    background: linear-gradient(135deg, #2c3e50, #3cdb34);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.blog-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.blog-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 1500px;
+}
+
+/* Compose Email Section */
+
+
+/* Email List Section */
+.blog-list {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 500px;
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    top: 80%;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.blog-list h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.blog-item {
+    padding: 20px;
+    border-bottom: 2px solid #e1e8ed;
+    transition: background-color 0.3s ease;
+}
+
+.blog-item:last-child {
+    border-bottom: none;
+}
+
+.blog-item:hover {
+    background-color: #f8f9fa;
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.blog-subject {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+
+/* Custom Scrollbar */
+.blog-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.blog-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.blog-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.blog-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .blog-content {
+        grid-template-columns: 1fr;
+    }
+}
+/* Modify email-item to accommodate delete button */
+.blog-item {
+padding: 20px;
+border-bottom: 2px solid #e1e8ed;
+transition: background-color 0.3s ease;
+}
+
+.blog-item:hover {
+background-color: #f8f9fa;
+}
+
+
+#gg {
+    background-image: url("../static/img/index_background.png");  /* Updated path */
+    background-size: cover;  /* Changed from fixed size to cover */
+    background-position: center;  /* Added for better positioning */
+    background-repeat: no-repeat;
+    min-height: 200vh;  /* Changed from height: 100% to min-height: 100vh */
+    width: 100%;  /* Added to ensure full width */
+    position: absolute;  /* Changed from absolute to fixed */
+    top: 0;
+    left: 0;
+    z-index: -2;  /* Added to ensure background stays behind content */
+    animation: fadeIn 4s;
+    }

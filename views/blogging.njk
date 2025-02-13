@@ -6,45 +6,18 @@
     <title>Send Email</title>
      <link rel="stylesheet" href="/css/blog_page.css">
 </head>
-
-<script>
-    const textarea = document.getElementById('content');
-    
-    textarea.addEventListener('input', function() {
-        // Reset height to auto to get correct scrollHeight
-        this.style.height = 'auto';
-        // Set new height based on content
-        const newHeight = Math.min(this.scrollHeight, 150); // Max height of 150px
-        this.style.height = newHeight + 'px';
-    });
-    
-    // Optional: Focus textarea when clicking anywhere in compose area
-    document.querySelector('.compose-area').addEventListener('click', function(e) {
-        if (e.target === this) {
-            textarea.focus();
-        }
-    });
-    </script>
-
-<style>
-    
-    </style>
-
 <body>
      <div id="gg"></div>
 
 
 
-     <div class="email-container">
-        <div class="email-header">
-            <h1><i class="fas fa-envelope"></i>post list</h1>
-        </div>
-        <div class="email-content">
+     <div class="blog-container">
+        <div class="blog-content">
             <div class="compose-section">
                 <h2><i class="fas fa-pen"></i> Post a new post</h2>
-                <form action="/post_blog" method="POST" class="email-form">
+                <form action="/post_blog" method="POST" class="blog-form">
                     <div class="form-group">
-                        <label for="recipient">To:</label>
+                        <label for="username">username:</label>
                         <input type="text" id="username" name="username" required>
                     </div>
                     <div class="form-group">

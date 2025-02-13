@@ -1,0 +1,18 @@
+.logout-container {
+    width: 70%;
+    margin: 40px auto;
+    padding: 0 20px;
+    position: absolute; 
+    left: 15%;
+    top: 700%;
+}
+
+.logout-poster {
+    background: linear-gradient(135deg, #2c3e50, #3cdb34);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
