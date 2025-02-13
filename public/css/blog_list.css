@@ -147,7 +147,7 @@ background-color: #f8f9fa;
 
 
 #gg {
-    background-image: url("../static/img/index_background.png");  /* Updated path */
+    background-image: url("../public/images/1.png");  /* Updated path */
     background-size: cover;  /* Changed from fixed size to cover */
     background-position: center;  /* Added for better positioning */
     background-repeat: no-repeat;

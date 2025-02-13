@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/single_post.css">
+</head>
+<body>
+    <div id="gg"></div>
+    {% for post in posts %}
+    <div class="post-container">
+        <div class="post-header">
+            <h1 class="post-title">{{ post.blog_title }}</h1>
+            <p class="post-meta">By {{ post.username }} on {{ post.time }}</p>
+        </div>
+        <div class="post-content">
+            <p>{{ post.blog_content }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>

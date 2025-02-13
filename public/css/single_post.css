@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.post-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+}
+
+.post-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.post-meta {
+    color: #888;
+    font-size: 14px;
+}
+
+.post-content {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+#gg {
+    background-image: url("../public/images/1.png");  /* Updated path */
+    background-size: cover;  /* Changed from fixed size to cover */
+    background-position: center;  /* Added for better positioning */
+    background-repeat: no-repeat;
+    min-height: 200vh;  /* Changed from height: 100% to min-height: 100vh */
+    width: 100%;  /* Added to ensure full width */
+    position: absolute;  /* Changed from absolute to fixed */
+    top: 0;
+    left: 0;
+    z-index: -2;  /* Added to ensure background stays behind content */
+    animation: fadeIn 4s;
+    }

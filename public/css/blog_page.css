@@ -6,12 +6,12 @@ body {
 
 
 .blog-container {
-    width: 1500px;
+    width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
     position: absolute; 
-    left:10%;
-    top: 2%;
+    left:30%;
+    top: 20%;
 }
 
 
@@ -30,7 +30,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
-    width: 1500px;
+    width: 1000px;
 }
 
 /* Compose Email Section */
@@ -103,7 +103,7 @@ body {
 
 /* Email List Section */
 #gg {
-    background-image: url("../static/img/index_background.png");  /* Updated path */
+    background-image: url("../public/images/1.png");  /* Updated path */
     background-size: cover;  /* Changed from fixed size to cover */
     background-position: center;  /* Added for better positioning */
     background-repeat: no-repeat;
