@@ -2,6 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url("images/1.jpg");  
 }
 
 
@@ -102,16 +103,3 @@ body {
 }
 
 /* Email List Section */
-#gg {
-    background-image: url("../public/images/1.png");  /* Updated path */
-    background-size: cover;  /* Changed from fixed size to cover */
-    background-position: center;  /* Added for better positioning */
-    background-repeat: no-repeat;
-    min-height: 200vh;  /* Changed from height: 100% to min-height: 100vh */
-    width: 100%;  /* Added to ensure full width */
-    position: absolute;  /* Changed from absolute to fixed */
-    top: 0;
-    left: 0;
-    z-index: -2;  /* Added to ensure background stays behind content */
-    animation: fadeIn 4s;
-    }

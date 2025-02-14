@@ -1,11 +1,11 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url("images/1.jpg");  
     min-height: 100vh;
 }
 
@@ -42,7 +42,7 @@ body {
 }
 
 #gg {
-    background-image: url("../public/images/1.png");  /* Updated path */
+    background-image: url("/images/1.jpg");  /* Fixed path - go up one directory from css folder */
     background-size: cover;  /* Changed from fixed size to cover */
     background-position: center;  /* Added for better positioning */
     background-repeat: no-repeat;
@@ -53,4 +53,19 @@ body {
     left: 0;
     z-index: -2;  /* Added to ensure background stays behind content */
     animation: fadeIn 4s;
-    }
+}
+
+.blog-image {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;   
+    height: 100%;  
+    overflow: hidden;      /* Hide any overflow content */
+    position: relative; 
+}
+
+.blog-image img {
+    width: 427px;          /* Set the width of the container */
+    height: 238px; 
+    object-fit: cover;
+}

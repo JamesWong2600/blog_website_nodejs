@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import { Client, GatewayIntentBits } from 'discord.js';
 import nunjucks from 'nunjucks';
+import multer from 'multer';
 import fs from 'fs'; 
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
@@ -25,7 +26,19 @@ const redis_client = redis.createClient({
   url: 'redis://localhost:6379'  // default Redis url
 });
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'public/css/uploads/'); // Directory to save uploaded files
+  },
+  filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  }
+});
 
+const load = multer({ storage: storage });
+
+
+redis_client.connect();
 
 redis_client.on('connect', () => {
   console.log('Connected to Redis');
@@ -54,7 +67,8 @@ db.serialize(() => {
       username TEXT NOT NULL,
       blog_title TEXT NOT NULL,
       blog_content TEXT NOT NULL,
-      time TEXT NOT NULL
+      time TEXT NOT NULL,
+      image TEXT NOT NULL
   )`, (err) => {
       if (err) {
           console.error('Error creating users table:', err);
@@ -81,13 +95,15 @@ nunjucks.configure('views', {
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/blog', (req, res) => {
-  db.all("SELECT id, username, blog_title, blog_content, timeFROM blog", (err, rows) => {
+  db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog order by time desc", (err, rows) => {
     if (err) {
-      console.error(err.message);
-      res.render('blog.njk', {posts: rows});
+      console.error(err);
     } else {
-      const text = "discord chat record";
-      res.render('blog.njk', {posts: rows});
+      const ip = req.ip;
+      getRedisData(ip).then(name => {
+        console.log("name: "+name);
+        res.render('blog.njk', {posts: rows, welcome: "welcome "+name});
+      });
     }
   });
 
@@ -104,10 +120,8 @@ app.get('/register_page', (req, res) => {
 
 app.get('/logout', (req, res) => {
   try {
-    redis_client.connect();
     const ip = req.ip; // If you're using Express
     redis_client.del(ip);
-    redis_client.quit();
     console.log("logout");
     res.render('login.njk')
   } catch (err) {
@@ -120,21 +134,31 @@ app.get('/blogging', (req, res) => {
   res.render('blogging.njk',);
 });
 
-
-app.post('/post_blog', async (req, res) => {
+app.post('/post_blog', load.single('file'), (req, res) => {
+  console.log(req.file.filename);
+  if (!req.file) {
+    return res.status(400).send('No file uploaded.');
+  }
   const ip = req.ip;
   getRedisData(ip).then(username => {
     console.log("name: "+ username);
   const blog_title = req.body.blog_title;
   const blog_content = req.body.blog_content;
-  const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+  //const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.getFullYear() + '-' +
+    String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+    String(currentDate.getDate()).padStart(2, '0') + ' ' +
+    String(currentDate.getHours()).padStart(2, '0') + ':' +
+    String(currentDate.getMinutes()).padStart(2, '0') + ':' +
+    String(currentDate.getSeconds()).padStart(2, '0');
   console.log(username+" "+blog_title+" "+blog_content);
   db.run(
-      "INSERT INTO blog (username, blog_title, blog_content, time) VALUES ('" + username + "', '" + blog_title + "', '" + blog_content + "', '" + time + "')", (err, rows) => {
+      "INSERT INTO blog (username, blog_title, blog_content, time, image) VALUES ('" + username + "', '" + blog_title + "', '" + blog_content + "', '" + formattedDateTime + "', '" + req.file.filename + "')", (err, rows) => {
         if (err) {
           console.error(err.message);
         } else {
-          db.all("SELECT id, username, blog_title, blog_content, time FROM blog order by time desc", (err, rows) => {
+          db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog order by time desc", (err, rows) => {
             if (err) {
               console.error(err.message);
               res.status(500).send('Error retrieving data from database');
@@ -142,7 +166,7 @@ app.post('/post_blog', async (req, res) => {
               const ip = req.ip;
               getRedisData(ip).then(name => {
                 console.log("name: "+name);
-                res.render('blog.njk', {posts: rows, welcome: "welcome "+username});
+                res.redirect(301, '/blog');
               });
             }
           });
@@ -154,7 +178,7 @@ app.post('/post_blog', async (req, res) => {
 app.post('/read_blog', async (req, res) => {
   const id = req.body.post_id;
   console.log("id: "+id);
-  db.all("SELECT id, username, blog_title, blog_content, time FROM blog where id = '"+id+"'", (err, rows) => {
+  db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog where id = '"+id+"'", (err, rows) => {
     if (err) {
       console.error(err.message);
       res.status(500).send('Error retrieving data from database');
@@ -186,16 +210,14 @@ app.post('/register', async (req, res) => {
           console.error(err.message);
           res.render('register.njk',{errorMessage: 'the username or email might me used'});
         } else {
-          db.all("SELECT id, username, blog_title, blog_content, time FROM blog order by time desc", (err, rows) => {
+          db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog order by time desc", (err, rows) => {
             if (err) {
               console.error(err.message);
               res.status(500).send('Error retrieving data from database');
             } else {
               try {
-                redis_client.connect();
                 const ip = req.ip; // If you're using Express
                 redis_client.set(ip, username);
-                redis_client.quit();
                 res.render('blog.njk', {posts: rows, welcome: "welcome "+ username})
               } catch (err) {
                 console.error('Error inserting data into Redis', err);
@@ -218,15 +240,13 @@ app.post('/login', async (req, res) => {
       console.log(err);
       res.render('login.njk',{errorMessage: 'invalid username or password'});
     } else {
-      db.all("SELECT id, username, blog_title, blog_content, time FROM blog order by time desc", (err, rows) => {
+      db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog order by time desc", (err, rows) => {
         if (err) {
           console.error(err);
           res.status(500).send('Error retrieving data from database');
         } else {
-          redis_client.connect();
           const ip = req.ip;
           redis_client.set(ip, username);
-          redis_client.quit();
           res.render('blog.njk', {posts: rows, welcome: "welcome "+ username})
         }
       });
@@ -241,10 +261,8 @@ app.listen(port, () => {
 
 async function getRedisData(ip) {
   try {
-      await redis_client.connect();
       const value = await redis_client.get(ip);
       console.log("redis data: "+value);
-      await redis_client.quit();
       return value;
   } catch (error) {
       console.error('Error getting data:', error);

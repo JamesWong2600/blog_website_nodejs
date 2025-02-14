@@ -2,16 +2,127 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url("images/1.jpg");  
+    min-height: 100vh;
 }
 
+.welcome-banner {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    text-align: right;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
 .blog-container {
-    width: 1500px;
-    margin: 40px auto;
-    padding: 0 20px;
-    position: absolute; 
-    left:10%;
-    top: 2%;
+    max-width: 800px;
+    margin: 80px auto 20px;
+    padding: 20px;
+}
+
+.blog-post {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.blog-post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.blog-title {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.blog-meta {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.blog-content {
+    color: #34495e;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.read-more-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.read-more-btn:hover {
+    background-color: #2980b9;
+}
+
+.action-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.new-post-btn, .logout-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.new-post-btn {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.logout-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.new-post-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .blog-container {
+        padding: 10px;
+        margin-top: 60px;
+    }
+    
+    .blog-post {
+        padding: 15px;
+    }
+    
+    .action-buttons {
+        bottom: 10px;
+        right: 10px;
+    }
 }
 
 .blog-header {
@@ -145,17 +256,19 @@ transition: background-color 0.3s ease;
 background-color: #f8f9fa;
 }
 
+.blog-image {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;   
+    height: 100%;  
+    overflow: hidden;      /* Hide any overflow content */
+    position: relative; 
+}
 
-#gg {
-    background-image: url("../public/images/1.png");  /* Updated path */
-    background-size: cover;  /* Changed from fixed size to cover */
-    background-position: center;  /* Added for better positioning */
-    background-repeat: no-repeat;
-    min-height: 200vh;  /* Changed from height: 100% to min-height: 100vh */
-    width: 100%;  /* Added to ensure full width */
-    position: absolute;  /* Changed from absolute to fixed */
-    top: 0;
-    left: 0;
-    z-index: -2;  /* Added to ensure background stays behind content */
-    animation: fadeIn 4s;
-    }
+.blog-image img {
+    width: 320px;          /* Set the width of the container */
+    height: 180px; 
+    object-fit: cover;
+}
+
+

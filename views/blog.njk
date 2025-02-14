@@ -3,55 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Email</title>
-     <link rel="stylesheet" href="/css/blog_list.css">
+    <title>Blog Posts</title>
+    <link rel="stylesheet" href="/css/blog_list.css">
 </head>
 <body>
-     <div id="gg"></div>
-     <div class="blog-container">
-        <div class="blog-header">
-            <h1><i class="fas fa-envelope"></i>{{welcome}}</h1>
-        
-    <div class="blog-list">
+    <div class="welcome-banner">
+        {{ welcome }}
+    </div>
+
+    <div class="blog-container">
         <h2><i class="fas fa-inbox"></i>Post list</h2>
         {% for post in posts %}
-        <div class="blog-item">
+        <article class="blog-post">
+            <h2 class="blog-title">{{ post.blog_title }}</h2>
             <div class="blog-meta">
                 <span><i class="fas fa-user"></i>sender: {{ post.username }}</span>
                 <span><i class="far fa-clock"></i>time: {{ post.time }}</span>
             </div>
-             <div class="blog-subject">
-              <form action="/read_blog" method="POST" class="blog-form">
-                   <input type="hidden" name="post_id" value="{{ post.id }}">
-                    <button type="submit" class="submit-btn">
-                      <i class="fas fa-paper-plane"></i>title: {{ post.blog_title }}
-                    </button>
-              </form> 
-
-             </div>
-        </div>
-       
+            <div class="blog-content">
+                {{ post.blog_content | truncate(200) }}
+            </div>
+            <div class="blog-image">
+                <img src="/css/uploads/{{ post.image }}" alt="Post Image">
+            </div>
+            <form action="/read_blog" method="post">
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <button type="submit" class="read-more-btn">Read More</button>
+            </form>
+        </article>
         {% endfor %}
-    </div> 
+    </div>
 
-
-       <div class="blog-poster-container">
-            <div class="blog-poster">
-            <a href="/blogging"><h1><i class="fas fa-envelope"></i>post blog</h1></a>
-            </div>
-      </div>
-
-      <div class="logout-container">
-            <div class="logout">
-            <a href="/logout"><h1><i class="fas fa-envelope"></i>Logout</h1></a>
-            </div>
-      </div>
-
-
-        
-
-
-
-
+    <div class="action-buttons">
+        <form action="/blogging" method="get" style="display: inline;">
+            <button type="submit" class="new-post-btn">New Post</button>
+        </form>
+        <form action="/logout" method="get" style="display: inline;">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
 </body>
 </html>
