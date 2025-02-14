@@ -65,7 +65,7 @@ db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS blog (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL,
-      blog_title TEXT NOT NULL,
+      blog_title TEXT NOT NULL UNIQUE,
       blog_content TEXT NOT NULL,
       time TEXT NOT NULL,
       image TEXT NOT NULL
@@ -77,6 +77,23 @@ db.serialize(() => {
       }
   });
 });
+
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS comment (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    comment TEXT NOT NULL,
+    time TEXT NOT NULL,
+    blog_title TEXT NOT NULL
+)`, (err) => {
+    if (err) {
+        console.error('Error creating users table:', err);
+    } else {
+        console.log('Users table ready2');
+    }
+});
+});
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -111,8 +128,60 @@ app.get('/blog', (req, res) => {
 
 
 app.get('/', (req, res) => {
-      res.render('login.njk',);
+  res.render('login.njk',);
 });
+
+app.post('/comment', (req, res) => {
+  const blog_title = req.body.blog_title;
+  const id = req.body.id;
+  const comment = req.body.comment;
+  const currentDate = new Date();
+  const formattedDateTime = currentDate.getFullYear() + '-' +
+    String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+    String(currentDate.getDate()).padStart(2, '0') + ' ' +
+    String(currentDate.getHours()).padStart(2, '0') + ':' +
+    String(currentDate.getMinutes()).padStart(2, '0') + ':' +
+    String(currentDate.getSeconds()).padStart(2, '0');
+    const ip = req.ip;
+    console.log(id+"xxx "+blog_title+"xxx "+comment);
+      getRedisData(ip).then(username => {
+  db.run(
+    "INSERT INTO comment (username, comment, time, blog_title) VALUES ('" + username + "', '" + comment + "', '" + formattedDateTime + "', '" + blog_title + "')", (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        res.render('register.njk',{errorMessage: 'the username or email might me used'});
+      } else {
+        db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog where id = '"+id+"'", (err, rows2) => {
+          if (err) {
+            console.error(err.message);
+            res.status(500).send('Error retrieving data from database');
+          } else {
+            db.all("SELECT username, comment, time FROM comment where blog_title = '"+blog_title+"' order by time desc", (err, rows) => {
+              if (err) {
+                console.error(err.message);
+                res.status(500).send('Error retrieving data from database');
+              } else {
+                const ip = req.ip;
+                getRedisData(ip).then(name => {
+                  console.log("name: "+name);
+                  res.redirect(301, '/read_blog');
+                  //res.render('single_post.njk', {blog_title: rows[0].blog_title, username: rows[0].username,
+                    // time: rows[0].time, blog_content: rows[0].blog_content, comments: rows2,
+                    // image: rows[0].image, welcome: "welcome "+name});
+                });
+              }
+            });
+          }
+        });
+        console.log("cannot post comment");
+      }                   
+    }
+);});
+});
+
+
+
+
 
 app.get('/register_page', (req, res) => {
   res.render('register.njk',);
@@ -178,20 +247,21 @@ app.post('/post_blog', load.single('file'), (req, res) => {
 app.post('/read_blog', async (req, res) => {
   const id = req.body.post_id;
   console.log("id: "+id);
-  db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog where id = '"+id+"'", (err, rows) => {
+  db.all("SELECT * FROM blog where id = '"+id+"'", (err, row) => {
     if (err) {
       console.error(err.message);
-      res.status(500).send('Error retrieving data from database');
+      res.status(500).send('Error retrieving data from database');;
     } else {
       try {
-        console.log("data "+rows.length);
         const ip = req.ip;
+        console.log("keep going");
         getRedisData(ip).then(name => {
           console.log("name: "+name);
-          res.render('single_post.njk', {posts: rows, welcome: "welcome "+name});
-        });
+          res.render('single_post.njk', {username: row[0].username, blog_title: row[0].blog_title, 
+             blog_content: row[0].blog_content, time: row[0].time, image: row[0].image, welcome: "welcome "+name});
+        }); 
       } catch (err) {
-        console.error('Error inserting data into Redis', err);
+        console.error('Error inserting day day into Redis', err);
         res.status(500).send('Error inserting data into Redis');
       }
     }

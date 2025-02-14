@@ -8,19 +8,37 @@
 </head>
 <body>
     <div id="gg"></div>
-    {% for post in posts %}
     <div class="post-container">
         <div class="post-header">
-            <h1 class="post-title">{{ post.blog_title }}</h1>
-            <p class="post-meta">By {{ post.username }} on {{ post.time }}</p>
+            <h1 class="post-title">{{ blog_title }}</h1>
+            <p class="post-meta">By {{ username }} on {{ time }}</p>
         </div>
         <div class="post-content">
-            <p>{{ post.blog_content }}</p>
+            <p>{{ blog_content }}</p>
         </div>
         <div class="blog-image">
-            <img src="/css/uploads/{{ post.image }}" alt="Post Image">
+            <img src="/css/uploads/{{ image }}" alt="Post Image">
         </div>
     </div>
-    {% endfor %}
+       {% for comment in comments %}
+       <article class="blog-post">
+            <div class="blog-meta">
+                <span><i class="fas fa-user"></i>sender: {{ comment.username }}</span>
+                <span><i class="far fa-clock"></i>time: {{ comment.time }}</span>
+            </div>
+            <div class="blog-content">
+                {{ comment.comment }}
+            </div>
+        </article>
+
+       {% endfor %}
+      <div class="action-buttons">
+        <form action="/comment" method="post" style="display: inline;">
+            <input type="hidden" name="blog_title" value="{{ blog_title }}">
+            <input type="hidden" name="blog_title" value="{{ id }}">
+            <input type="text" name="comment" required>
+            <button type="submit" class="new-post-btn">comment</button>
+        </form>
+    </div>
 </body>
 </html>
