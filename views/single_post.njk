@@ -20,25 +20,34 @@
             <img src="/css/uploads/{{ image }}" alt="Post Image">
         </div>
     </div>
-       {% for comment in comments %}
-       <article class="blog-post">
-            <div class="blog-meta">
-                <span><i class="fas fa-user"></i>sender: {{ comment.username }}</span>
-                <span><i class="far fa-clock"></i>time: {{ comment.time }}</span>
-            </div>
-            <div class="blog-content">
-                {{ comment.comment }}
-            </div>
-        </article>
 
-       {% endfor %}
-      <div class="action-buttons">
-        <form action="/comment" method="post" style="display: inline;">
+<div class="comments-section">
+    <h2>Comments</h2>
+    {% for comment in comments %}
+    <article class="comment">
+        <div class="comment-header">
+            <span class="comment-username"><i class="fas fa-user"></i> {{ comment.username }}</span>
+            <span class="comment-time"><i class="far fa-clock"></i> {{ comment.time }}</span>
+        </div>
+        <p class="comment-text">{{ comment.comment }}</p>
+    </article>
+    {% endfor %}
+</div> 
+
+
+    <div class="comment-input-container">
+        <form action="/comment" method="post">
             <input type="hidden" name="blog_title" value="{{ blog_title }}">
-            <input type="hidden" name="blog_title" value="{{ id }}">
-            <input type="text" name="comment" required>
-            <button type="submit" class="new-post-btn">comment</button>
+            <input type="hidden" name="id" id="id" value="{{ id }}">
+            <input type="text" name="comment" required placeholder="Add a comment..." class="comment-input">
+            <button type="submit" class="new-post-btn">Comment</button>
+        </form>
+
+         
+         </form action="/blog" method="get" style="display: inline;">
+            <a href="/blog"><button type="submit" class="new-post-btn">back to blog list</button></a>
         </form>
     </div>
+
 </body>
 </html>

@@ -26,8 +26,9 @@
             <div class="blog-image">
                 <img src="/css/uploads/{{ post.image }}" alt="Post Image">
             </div>
-            <form action="/read_blog" method="post">
-                <input type="hidden" name="post_id" value="{{ post.id }}">
+            <form action="/read_blog" method="get">
+                <input type="hidden" name="id" id="id" value="{{ post.id }}">
+                <input type="hidden" name="blog_title" id="blog_title" value="{{  post.blog_title }}">
                 <button type="submit" class="read-more-btn">Read More</button>
             </form>
         </article>

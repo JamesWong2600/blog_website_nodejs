@@ -111,7 +111,7 @@ nunjucks.configure('views', {
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.get('/blog', (req, res) => {
+app.all('/blog', (req, res) => {
   db.all("SELECT id, username, blog_title, blog_content, time, image FROM blog order by time desc", (err, rows) => {
     if (err) {
       console.error(err);
@@ -126,14 +126,21 @@ app.get('/blog', (req, res) => {
 
 });
 
+app.post('/backtolist', (req, res) => {
+  console.log("backtolist");
+  res.redirect(301, '/blog');
+});
+
 
 app.get('/', (req, res) => {
   res.render('login.njk',);
 });
 
-app.post('/comment', (req, res) => {
+app.all('/comment', (req, res) => {
   const blog_title = req.body.blog_title;
   const id = req.body.id;
+  console.log("this blog_title is: "+blog_title);
+  console.log("this id is: "+id);
   const comment = req.body.comment;
   const currentDate = new Date();
   const formattedDateTime = currentDate.getFullYear() + '-' +
@@ -164,6 +171,10 @@ app.post('/comment', (req, res) => {
                 const ip = req.ip;
                 getRedisData(ip).then(name => {
                   console.log("name: "+name);
+                  const ip = req.ip; 
+                  redis_client.set(ip+" "+"id", id);
+                  redis_client.set(ip+" "+"blog_title", blog_title);
+                  console.log("id is this id: "+id);
                   res.redirect(301, '/read_blog');
                   //res.render('single_post.njk', {blog_title: rows[0].blog_title, username: rows[0].username,
                     // time: rows[0].time, blog_content: rows[0].blog_content, comments: rows2,
@@ -244,21 +255,81 @@ app.post('/post_blog', load.single('file'), (req, res) => {
   );
 });});
 
-app.post('/read_blog', async (req, res) => {
-  const id = req.body.post_id;
-  console.log("id: "+id);
+app.get('/read_blog', async (req, res) => {
+  const id = req.query.id;
+  console.log("this post id is: "+id);
+  if (id === null || id === undefined) {
+    const ip = req.ip; 
+    getRedisData(ip+" "+"id").then(id => {
+      console.log("my id is: "+id);
+      db.all("SELECT * FROM blog where id = '"+id+"'", (err, row) => {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Error retrieving data from database');;
+        } else {
+          try {
+            const ipp = req.ip;
+            console.log("this is the ipp: "+ipp);
+            getRedisData(ipp+" "+"blog_title").then(blog_title => {
+            db.all("SELECT username, comment, time FROM comment where blog_title = '"+blog_title+"' order by time desc", (err, rows) => {
+              if (err) {
+                console.error(err.message);
+                res.status(500).send('Error retrieving data from database');
+              } else {
+                const ip = req.ip;
+                console.log("this is the comment: "+row[0].blog_title);
+                console.log("this is the comment: "+rows[0].comment);
+                getRedisData(ip).then(name => {
+                  console.log("name: "+name);
+                  res.render('single_post.njk', {comments: rows, id: id, username: row[0].username, blog_title: row[0].blog_title, 
+                     blog_content: row[0].blog_content, time: row[0].time, image: row[0].image, welcome: "welcome "+name});
+                }); 
+              }
+            }); 
+          
+          });
+          } catch (err) {
+            console.error('Error inserting day day into Redis', err);
+            res.status(500).send('Error inserting data into Redis');
+          }
+        }
+      });
+    });
+}else{
+  console.log("id is: "+id);
   db.all("SELECT * FROM blog where id = '"+id+"'", (err, row) => {
     if (err) {
       console.error(err.message);
       res.status(500).send('Error retrieving data from database');;
     } else {
       try {
-        const ip = req.ip;
-        console.log("keep going");
-        getRedisData(ip).then(name => {
-          console.log("name: "+name);
-          res.render('single_post.njk', {username: row[0].username, blog_title: row[0].blog_title, 
-             blog_content: row[0].blog_content, time: row[0].time, image: row[0].image, welcome: "welcome "+name});
+        const ipp = req.ip;
+        console.log("this is the ipp: "+ipp);
+        const blog_titles = req.query.blog_title;
+        console.log(" the blog_title: "+blog_titles);
+        db.all("SELECT username, comment, time FROM comment where blog_title = '"+blog_titles+"' order by time desc", (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            res.status(500).send('Error retrieving data from database');
+          } else if (rows.length === 0) {
+            const ip = req.ip;
+            console.log("this is the comment: "+row[0].blog_title);
+            getRedisData(ip).then(name => {
+              console.log("name: "+name);
+              res.render('single_post.njk', {id: id, username: row[0].username, blog_title: row[0].blog_title, 
+                 blog_content: row[0].blog_content, time: row[0].time, image: row[0].image, welcome: "welcome "+name});
+            }); 
+          }
+          else {
+            const ip = req.ip;
+            console.log("this is the comment: "+row[0].blog_title);
+            console.log("this is the new blog_title: "+rows[0].comment);
+            getRedisData(ip).then(name => {
+              console.log("name: "+name);
+              res.render('single_post.njk', {comments: rows, id: id, username: row[0].username, blog_title: row[0].blog_title, 
+                 blog_content: row[0].blog_content, time: row[0].time, image: row[0].image, welcome: "welcome "+name});
+            }); 
+          }
         }); 
       } catch (err) {
         console.error('Error inserting day day into Redis', err);
@@ -266,7 +337,10 @@ app.post('/read_blog', async (req, res) => {
       }
     }
   });
+}
 });
+
+
 
 
 app.post('/register', async (req, res) => {
@@ -332,7 +406,7 @@ app.listen(port, () => {
 async function getRedisData(ip) {
   try {
       const value = await redis_client.get(ip);
-      console.log("redis data: "+value);
+      console.log("redis data is that: "+value);
       return value;
   } catch (error) {
       console.error('Error getting data:', error);
